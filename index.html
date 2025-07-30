@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Recommender</title>
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      background-color: #f0f0f0;
+      background-image: url('https://cdn.pixabay.com/photo/2017/12/17/15/47/confetti-3020124_1280.jpg');
+      background-size: cover;
+      text-align: center;
+      padding: 50px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 250px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-left: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+    .links a {
+      margin: 10px;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Arin's really cool super awesome fantastic and amazing Music Recommender</h1>
+  <p>Enter your full name to get a song recommended:</p>
+  <input type="text" id="nameInput" placeholder="Enter your name">
+  <button onclick="recommendSong()">Get Song</button>
+  <div id="result"></div>
+
+  <script>
+    const nameMap = {
+      "arjun saradava": { title: "Bad Dog No Biscuits - SEAT BELTS", spotify: "https://open.spotify.com/track/6qRRnwgJADWFbWUbVtaKNl?si=18u9lBRaSmqxUL2Spj0A5Q", apple: "https://music.apple.com/us/song/bad-dog-no-biscuits/1521453392" },
+      "vrushika joshi": { title: "Concorde", spotify: "https://open.spotify.com/track/0y5akbuW5mCnnUe71xATpe?si=85-TByewTz6fm_VEAEuPbQ" },
+      "ishika panchal": { title: "Ik Bagal", spotify: "https://open.spotify.com/track/4OOXIr4Wce7TuLUu65v653?si=3M_r1gWsSRi3RiTeytm2Nw" },
+      "radhika sadani": { title: "Dear Prudence", spotify: "https://open.spotify.com/track/5NQYyej46WQkgCbnzGD21W?si=mEZLPni-Q7G1uE2Q2hK_sw" },
+      "madhav bagaria": { title: "The New Sound", spotify: "https://open.spotify.com/track/2gGHan1D8nlvv27lQU2GjL?si=7pHuREUFQmei21rzep4sVA" },
+      "shivansh nandwani": { title: "Switty Tera Pyaar Chaida", spotify: "https://open.spotify.com/track/0jWrfBcKMBQjJnDbpM6GMu?si=BEn7ajdaT7iWARJ7S1CoUw" },
+      "fenil khanderia": { title: "Boys Don't Cry", spotify: "https://open.spotify.com/track/1QFh8OH1e78dGd3VyJZCAC?si=RO97itYWQvisTZx3DbzOpQ" },
+      "amber sahu": { title: "Keh Ke Lunga", spotify: "https://open.spotify.com/track/7ufAXG1jLMdzuQDqIrJ2Le?si=REpJa3w8RXK8roBLEvT6Vw" },
+      "aman gujrati": { title: "Oceans", spotify: "https://open.spotify.com/track/4gKy4mu2gkMEUyXD5peMIr?si=VAI9sjQ3Q-qMXPTcrUPqrw" },
+      "maitry darji": { title: "White Ferrari", spotify: "https://open.spotify.com/track/2LMkwUfqC6S6s6qDVlEuzV?si=72x71Q-uQFS2iWXsFI_nlQ" },
+      "varun rangnani": { title: "First It Giveth", spotify: "https://open.spotify.com/track/0UEMTz9APWfoJHdlXDeIzm?si=3bJO9RsERKibmdiFhnC0mg" },
+      "kush shah": { title: "Twin Flame", spotify: "https://open.spotify.com/track/15cYjzRUBRrDHn76GdxWiv?si=xd6g1bvsRgm0QmtYOEiHDg" },
+      "disha gopalani": { title: "Oh Comely", spotify: "https://open.spotify.com/track/41WcmdweTbIJAc8tiOR6xw?si=kyxeLnJ7RbCObxPy8BJ9cw" },
+      "akshat gandhi": { title: "hASHISHBHAI", spotify: "https://open.spotify.com/track/3R01jHtUJsHQZCfmOW70kb?si=NN8lkKu_TY2nmydK4pReEg" },
+      "aditi vakani": { title: "I felt your shape", spotify: "https://open.spotify.com/track/1HTR2cbs7Nor722yzYQi63?si=ylAWhgwfSJuW1rUBd8nEYg" },
+      "khushpreet dayal": { title: "Murder And Crime", spotify: "https://open.spotify.com/track/43flDuyszwqpgsukkqMVea?si=3WnpCwfMSCCNrDTKKra6Lw" },
+      "adya desai": { title: "Movement 6", spotify: "https://open.spotify.com/track/5i0EqAX50KcKNgMDMHZndM?si=F5dqSVzZSO-RIc-g2u7XcA" },
+      "kshitija desai": { title: "mary magdalene", spotify: "https://open.spotify.com/track/77tQQM8iEswfiSVLbTrFPX?si=Gf4huTabSYO6JOS1tSXnJA" },
+      "pratham patel": { title: "Overtime", spotify: "https://open.spotify.com/track/5pIVEk6Di7n1v5khOzJaJL?si=Wf1DsaVoRFCwagFvOgFleg" },
+      "pratham jain": { title: "Girl from the North Country", spotify: "https://open.spotify.com/track/739sLmfUkVFoyPtb0C3263?si=FvRxApi2S8SuuXzs9eQdyw" },
+      "sayak bhattacharya": { title: "Exit Music (For a film)", spotify: "https://open.spotify.com/track/0z1o5L7HJx562xZSATcIpY?si=IErMC6-CRNilrBc8go6EPA" },
+      "deeshna": { title: "Schwarzschild Drainhole", spotify: "https://open.spotify.com/track/4UApIN6oyiQoGbl1j7TGmN?si=-0rhBBrvTjykp7tkicUfKg" },
+      "ayush dave": { title: "One Beer", spotify: "https://open.spotify.com/track/4BnrGx9tWNF8aiXl1UhDBa?si=y3aFkTZiTMOwE_rD4rbTnw" },
+      "prem nair": { title: "Instrument of Surrender", spotify: "https://open.spotify.com/track/1PQW0obqVPcc4RveCG1VAh?si=XXhueRilTFSXZYA6Lgd4Vw" },
+      "aanchal jeswani": { title: "Golden Slumbers", spotify: "https://open.spotify.com/track/01SfTM5nfCou5gQL70r6gs?si=KTUdTfZ6RzSkAUSVm-tvqQ" },
+      "priyal naik": { title: "Bridge Over Troubled Water", spotify: "https://open.spotify.com/track/6l8EbYRtQMgKOyc1gcDHF9?si=YkRTN5c2QAKAtyQIXUUS0w" },
+      "jinay sheth": { title: "Hang On to Your Love (Long Version)", spotify: "https://open.spotify.com/track/6ugI2y8ngkdEVpkv0i3RAD?si=u7lEHEUlRTS4rV7jydYXHw" },
+      "dhanushi patel": { title: "Ode to the Mets", spotify: "https://open.spotify.com/track/1BLOVHYYlH4JUHQGcpt75R?si=3Cj8nQnLTF-gPrTvihv1Ag" },
+      "dhruvi patalia": { title: "505", spotify: "https://open.spotify.com/track/0BxE4FqsDD1Ot4YuBXwAPp?si=broTvX_ASSKtl_XsDnQQ2w" },
+      "vedant acharya": { title: "No Surprises", spotify: "https://open.spotify.com/track/10nyNJ6zNy2YVYLrcwLccB?si=Pz1y9RJuTtWayeBf1LTgeQ" },
+      "daksh dave": { title: "Is This It", spotify: "https://open.spotify.com/track/2pAD0PKMUMtxlMvz33tYzB?si=5Q7TPJpITNa3W25-StmryQ" },
+      "khushi acharya": { title: "Cemetery Gates", spotify: "https://open.spotify.com/track/03yOjwHoOPDlTUg0NRxN6t?si=WSKUaGzRSpWvqhqyzoA_gw" },
+      "pankti dave": { title: "Blame It On The Sun", spotify: "https://open.spotify.com/track/65qWooYTj0dq5HzoV6P9Kt?si=KdUUTU1hRFeVO1UVjhrRfg" },
+      "falak sharma": { title: "Science Fair", spotify: "https://open.spotify.com/track/1Yd4xh2rgyiqhbvEGDjfTo?si=0ey4f7sERh-LKoRy63U5Hw" }
+    };
+
+    function recommendSong() {
+      const name = document.getElementById("nameInput").value.trim().toLowerCase();
+      const resultDiv = document.getElementById("result");
+      const song = nameMap[name];
+
+      if (!song) {
+        resultDiv.innerHTML = "<p>You get NOTHING.</p>";
+        return;
+      }
+
+      resultDiv.innerHTML = `<h2>${song.title}</h2><div class="links">`;
+      if (song.spotify) resultDiv.innerHTML += `<a href="${song.spotify}" target="_blank">Spotify</a>`;
+      if (song.apple) resultDiv.innerHTML += `<a href="${song.apple}" target="_blank">Apple Music</a>`;
+      resultDiv.innerHTML += `</div>`;
+    }
+  </script>
+</body>
+</html>
